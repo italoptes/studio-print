@@ -149,20 +149,38 @@
     font-size: 1.4rem;
   }
 
-  .product-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-sm);
+  /* Wrapper para o fade absoluto */
+  .category-tabs-wrapper {
+    position: relative;
+    width: 100%;
   }
 
+  /* Elemento visual do fade */
+  .category-tabs-fade {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: calc(100% - 8px); /* Desconta o padding-bottom do scrollbar invisível */
+    width: 45px;
+    background: linear-gradient(to right, transparent, var(--color-bg, #FFFFFF));
+    pointer-events: none;
+    transition: opacity 300ms ease;
+  }
+
+  /* Ajuste dos tabs para scroll horizontal */
   .category-tabs {
-    justify-content: flex-start;
-    overflow-x: auto;
     flex-wrap: nowrap;
-    padding-bottom: var(--space-xs);
-    -webkit-overflow-scrolling: touch;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    justify-content: flex-start;
+    padding-bottom: 8px; /* Espaço pro scroll */
+    padding-right: var(--space-xl); /* Espaço extra no final para o peek */
+    
+    /* Esconder scrollbar */
     scrollbar-width: none;
+    -ms-overflow-style: none;
   }
-
+  
   .category-tabs::-webkit-scrollbar {
     display: none;
   }
@@ -170,13 +188,24 @@
   .category-tab {
     white-space: nowrap;
     flex-shrink: 0;
+    scroll-snap-align: start;
+  }
+
+  /* Ajuste dos cards para 1 coluna */
+  .product-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+
+  .product-card-image {
+    aspect-ratio: 4/3; /* Proporção melhor para 1 coluna no mobile */
   }
 
   .product-card-info {
-    padding: var(--space-sm);
+    padding: var(--space-md); /* Mais espaço interno conforme pedido */
   }
 
   .product-card-info h3 {
-    font-size: 0.85rem;
+    font-size: 1rem;
   }
 }

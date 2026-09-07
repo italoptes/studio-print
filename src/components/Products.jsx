@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
   CircleDot,
   Shirt,
@@ -46,10 +46,10 @@ const categories = [
     ],
   },
   {
-    id: 'camisas-dtf',
-    name: 'Camisas DTF',
+    id: 'dtf',
+    name: 'DTF',
     icon: Shirt,
-    description: 'Camisas com estampa DTF de alta qualidade',
+    description: 'Estampa DTF de alta qualidade',
     images: [],
   },
   {
@@ -84,8 +84,40 @@ const categories = [
 
 export default function Products() {
   const [activeCategory, setActiveCategory] = useState('bottons');
+  const [isScrolledToEnd, setIsScrolledToEnd] = useState(false);
+  const tabsRef = useRef(null);
 
   const current = categories.find((c) => c.id === activeCategory);
+
+  const handleScroll = () => {
+    if (!tabsRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = tabsRef.current;
+    // Margem de erro de 5px para checar se chegou no final
+    setIsScrolledToEnd(Math.ceil(scrollLeft + clientWidth) >= scrollWidth - 5);
+  };
+
+  useEffect(() => {
+    // Scroll hint (bump animado) na montagem do componente se estiver no mobile
+    const checkAndBump = () => {
+      if (tabsRef.current && window.innerWidth <= 768) {
+        // Checa inicial se precisa esconder o fade logo de cara
+        handleScroll();
+        
+        // Faz o bump
+        setTimeout(() => {
+          if (tabsRef.current && tabsRef.current.scrollLeft === 0) {
+            tabsRef.current.scrollTo({ left: 35, behavior: 'smooth' });
+            setTimeout(() => {
+              if (tabsRef.current) {
+                tabsRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+              }
+            }, 400);
+          }
+        }, 1000);
+      }
+    };
+    checkAndBump();
+  }, []);
 
   return (
     <section className="products" id="produtos">
@@ -95,23 +127,31 @@ export default function Products() {
           Tudo personalizado do jeitinho que você imaginar
         </p>
 
-        <div className="category-tabs" role="tablist">
-          {categories.map((cat) => {
-            const Icon = cat.icon;
-            return (
-              <button
-                key={cat.id}
-                className={`category-tab${activeCategory === cat.id ? ' active' : ''}`}
-                onClick={() => setActiveCategory(cat.id)}
-                role="tab"
-                aria-selected={activeCategory === cat.id}
-                id={`tab-${cat.id}`}
-              >
-                <Icon size={16} />
-                {cat.name}
-              </button>
-            );
-          })}
+        <div className="category-tabs-wrapper">
+          <div 
+            className="category-tabs" 
+            role="tablist"
+            ref={tabsRef}
+            onScroll={handleScroll}
+          >
+            {categories.map((cat) => {
+              const Icon = cat.icon;
+              return (
+                <button
+                  key={cat.id}
+                  className={`category-tab${activeCategory === cat.id ? ' active' : ''}`}
+                  onClick={() => setActiveCategory(cat.id)}
+                  role="tab"
+                  aria-selected={activeCategory === cat.id}
+                  id={`tab-${cat.id}`}
+                >
+                  <Icon size={16} />
+                  {cat.name}
+                </button>
+              );
+            })}
+          </div>
+          {!isScrolledToEnd && <div className="category-tabs-fade"></div>}
         </div>
 
         <div className="product-gallery" role="tabpanel" aria-labelledby={`tab-${activeCategory}`}>
@@ -123,8 +163,7 @@ export default function Products() {
                     <img src={img.src} alt={img.alt} loading="lazy" />
                   </div>
                   <div className="product-card-info">
-                    <h3>{current.name}</h3>
-                    <p>{current.description}</p>
+                    
                     <a
                       href={`https://wa.me/5583981513223?text=Olá!%20Tenho%20interesse%20em%20${encodeURIComponent(current.name)}!`}
                       target="_blank"

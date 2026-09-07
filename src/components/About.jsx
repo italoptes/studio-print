@@ -1,4 +1,4 @@
-import { Clock, MapPin, Heart } from 'lucide-react';
+import { Clock, MapPin, Heart, Truck } from 'lucide-react';
 import './About.css';
 
 export default function About() {
@@ -13,8 +13,7 @@ export default function About() {
             de transformar momentos em lembranças únicas.
           </p>
           <p>
-            Trabalhamos com carinho em cada peça — de bottons a camisas,
-            de ecobags a cerâmicas — sempre buscando entregar algo que
+            Trabalhamos com carinho em cada peça sempre buscando entregar algo que
             tenha a sua cara.
           </p>
         </div>
@@ -33,6 +32,14 @@ export default function About() {
             <div>
               <h3>Pirpirituba — PB</h3>
               <p>Atendemos na cidade e região com entrega rápida e cuidadosa.</p>
+            </div>
+          </div>
+
+          <div className="about-highlight">
+            <Truck size={22} className="about-highlight-icon" />
+            <div>
+              <h3>Envio para todo o Brasil</h3>
+              <p>Compre online e receba seus produtos em qualquer lugar do país.</p>
             </div>
           </div>
 
